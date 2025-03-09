@@ -8,3 +8,10 @@ Running `start.sh` will start the application server on port 8000
 Running `test.sh` will execute the test suite. 
 The environment variable REQUIRED_SETTING must 
 be set to some value for the tests to pass. 
+
+# Docker
+To run in docker:
+
+docker build . -t matific-test-app
+
+docker run -p 8000:8000 -d --name matific-test-app matific-test-app 
