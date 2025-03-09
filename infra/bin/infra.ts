@@ -8,3 +8,9 @@ new InfraStack(app, 'InfraStack', {
   env: { account: '505857544867', region: 'sa-east-1' }, //TODO parametrize
 
 });
+
+new InfraStack(app, 'ContainerRegistryStack', {
+
+  env: { account: '505857544867', region: 'sa-east-1' }, //TODO parametrize
+
+});
