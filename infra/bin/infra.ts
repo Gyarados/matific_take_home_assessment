@@ -1,16 +1,22 @@
 #!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { InfraStack } from '../lib/infra-stack';
+import { EcrStack, InfraStack, PREFIX  } from '../lib/infra-stack';
+
+const account = "505857544867"; //TODO parametrize for different environments
+const region = "sa-east-1";
+const ecrStackName = PREFIX + 'ecr-stack';
+const mainStackName = PREFIX + 'stack';
 
 const app = new cdk.App();
-new InfraStack(app, 'InfraStack', {
 
-  env: { account: '505857544867', region: 'sa-east-1' }, //TODO parametrize
+const ecrStack = new EcrStack(app, ecrStackName, {
+
+  env: { account: account, region: region }, 
 
 });
 
-new InfraStack(app, 'ContainerRegistryStack', {
+const stack = new InfraStack(app, mainStackName, ecrStack.repository, {
 
-  env: { account: '505857544867', region: 'sa-east-1' }, //TODO parametrize
+  env: { account: account, region: region }, 
 
 });

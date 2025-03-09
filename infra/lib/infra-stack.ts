@@ -4,18 +4,30 @@ import autoscaling = require('aws-cdk-lib/aws-autoscaling');
 import ec2 = require('aws-cdk-lib/aws-ec2');
 import ecs = require('aws-cdk-lib/aws-ecs');
 import ecs_patterns = require('aws-cdk-lib/aws-ecs-patterns');
+import ecr = require('aws-cdk-lib/aws-ecr');
 
-const EPHEMERAL_PORT_RANGE = ec2.Port.tcpRange(32768, 65535);
-const PREFIX = 'matific-test-app-';
+export const PREFIX = 'matific-test-app-';
 
 
-export class InfraStack extends cdk.Stack {
+export class EcrStack extends cdk.Stack {
+  repository: ecr.Repository;
+  
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    const vpc = new ec2.Vpc(this, 'vpc', { 
-      maxAzs: 2,
-      
+    const ecrRepository = new ecr.Repository(this, 'ecr-repo', {
+      repositoryName: PREFIX + 'ecr-repo',
+    });
+
+    this.repository = ecrRepository;
+
+  }
+}
+
+
+export class InfraStack extends cdk.Stack {
+  constructor(scope: Construct, id: string, ecrRepository: ecr.Repository, props?: cdk.StackProps) {
+    super(scope, id, props);
     });
 
     const asg = new autoscaling.AutoScalingGroup(this, PREFIX + 'asg', {
