@@ -38,7 +38,7 @@ jobs:
 
       - name: Deploy to AWS
         # if: ${{ steps.manual-approval.outputs.result == 'approved' }}
-        run: cdk deploy matific-test-app-stack
+        run: cdk deploy matific-test-app-stack --require-approval never
 
   build:
     runs-on: ubuntu-latest
