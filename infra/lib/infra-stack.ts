@@ -36,21 +36,14 @@ export class InfraStack extends cdk.Stack {
       restrictDefaultSecurityGroup: false,
     });
 
-    // const asg = new autoscaling.AutoScalingGroup(this, 'asg', {
-    //   autoScalingGroupName: PREFIX + 'asg',
-    //   instanceType: ec2.InstanceType.of(ec2.InstanceClass.T4G, ec2.InstanceSize.NANO),
-    //   machineImage: ec2.MachineImage.latestAmazonLinux2023({
-    //     cpuType: ec2.AmazonLinuxCpuType.X86_64,
-    //   }),
-    //   minCapacity: 1,
-    //   maxCapacity: 3,
-    //   vpc,
-    // });
-
     const cluster = new ecs.Cluster(this, 'ecs-cluster', { 
       vpc,
       clusterName: PREFIX + 'ecs-cluster',
     });
+
+    const logging = new ecs.AwsLogDriver({
+      streamPrefix: PREFIX + 'ecs-logs',
+    })
 
     const service = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "Service", {
       serviceName: PREFIX + 'service',
@@ -60,11 +53,11 @@ export class InfraStack extends cdk.Stack {
       cpu: 256, // 0.25 vCPU
       taskImageOptions: {
         image: ecs.ContainerImage.fromEcrRepository(ecrRepository),
-        // environment: {
-        //   ENV_VAR_1: "value1",
-        //   ENV_VAR_2: "value2",
-        // },
-        containerPort: 8000
+        environment: {
+          ALLOWED_HOSTS: "*",
+        },
+        containerPort: 8000,
+        logDriver: logging,
       },
       desiredCount: 1,
     })
