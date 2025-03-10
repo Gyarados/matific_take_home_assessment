@@ -20,6 +20,11 @@ jobs:
       - name: Install CDK
         run: npm install -g aws-cdk
 
+      - run: cd infra
+
+      - name: Run Synth
+        run: cdk synth matific-test-app-stack
+
       - name: View Diff
         run: cdk diff matific-test-app-stack
 
@@ -33,6 +38,7 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
+    needs: infra
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
