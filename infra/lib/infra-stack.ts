@@ -66,7 +66,6 @@ export class InfraStack extends cdk.Stack {
       },
       desiredCount: 1,
       certificate: certicate,
-      domainName: 'matific-test-app.desidera.dev',
     })
 
     service.targetGroup.configureHealthCheck({
