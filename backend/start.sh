@@ -1,2 +1,2 @@
 #!/bin/bash
-python -u manage.py runserver 0.0.0.0:8000
+gunicorn testapp.wsgi -b 0.0.0.0:8000
