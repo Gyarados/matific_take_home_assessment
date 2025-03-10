@@ -60,6 +60,7 @@ export class InfraStack extends cdk.Stack {
         image: ecs.ContainerImage.fromEcrRepository(ecrRepository),
         environment: {
           ALLOWED_HOSTS: "*",
+          REQUIRED_SETTING: "true",
         },
         containerPort: 8000,
         logDriver: logging,
