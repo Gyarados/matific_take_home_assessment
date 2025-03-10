@@ -7,6 +7,9 @@ on:
 jobs:
   infra:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./infra
     steps:
       - uses: actions/checkout@v3
 
@@ -19,8 +22,6 @@ jobs:
 
       - name: Install CDK
         run: npm install -g aws-cdk
-
-      - run: cd infra
 
       - name: Run Synth
         run: cdk synth matific-test-app-stack
