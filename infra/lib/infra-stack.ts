@@ -5,6 +5,7 @@ import ec2 = require('aws-cdk-lib/aws-ec2');
 import ecs = require('aws-cdk-lib/aws-ecs');
 import ecs_patterns = require('aws-cdk-lib/aws-ecs-patterns');
 import ecr = require('aws-cdk-lib/aws-ecr');
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 
 export const PREFIX = 'matific-test-app-';
 
@@ -45,6 +46,10 @@ export class InfraStack extends cdk.Stack {
       streamPrefix: PREFIX + 'ecs-logs',
     })
 
+    const certicateArn = 'arn:aws:acm:sa-east-1:505857544867:certificate/99190aad-c43c-4e34-b5f1-6615132e64bf';
+
+    const certicate = Certificate.fromCertificateArn(this, 'cert', certicateArn);
+
     const service = new ecs_patterns.ApplicationLoadBalancedFargateService(this, "Service", {
       serviceName: PREFIX + 'service',
       loadBalancerName: PREFIX + 'alb',
@@ -60,6 +65,8 @@ export class InfraStack extends cdk.Stack {
         logDriver: logging,
       },
       desiredCount: 1,
+      certificate: certicate,
+      domainName: 'matific-test-app.desidera.dev',
     })
 
     service.targetGroup.configureHealthCheck({
