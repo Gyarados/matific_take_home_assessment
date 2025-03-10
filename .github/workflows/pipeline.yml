@@ -42,7 +42,6 @@ jobs:
 
   build:
     runs-on: ubuntu-latest
-    needs: infra
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -68,3 +67,15 @@ jobs:
           docker tag $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:${{ github.sha }}
+
+  release:
+    runs-on: ubuntu-latest
+    needs: [infra, build]
+    steps:
+      - name: Release new version
+        run: |
+          aws ecs update-service --cluster matific-test-app-ecs-cluster --service matific-test-app-service --force-new-deployment
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
