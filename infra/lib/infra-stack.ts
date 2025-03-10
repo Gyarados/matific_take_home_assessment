@@ -66,10 +66,12 @@ export class InfraStack extends cdk.Stack {
       },
       desiredCount: 1,
       certificate: certicate,
+      redirectHTTP: true,
+      publicLoadBalancer: true,
     })
 
     service.targetGroup.configureHealthCheck({
-      path: "/health"
+      path: "/health/"
     })
   }
 }
