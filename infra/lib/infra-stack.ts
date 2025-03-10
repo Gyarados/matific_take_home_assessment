@@ -65,6 +65,11 @@ export class InfraStack extends cdk.Stack {
         containerPort: 8000,
         logDriver: logging,
       },
+      healthCheck: {
+        command: ['CMD-SHELL', 'curl -f http://localhost:8000/health/ || exit 1'],
+        interval: cdk.Duration.minutes(1),
+        startPeriod: cdk.Duration.seconds(5),
+      },
       desiredCount: 1,
       certificate: certicate,
       redirectHTTP: true,
