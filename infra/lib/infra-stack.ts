@@ -71,7 +71,8 @@ export class InfraStack extends cdk.Stack {
     })
 
     service.targetGroup.configureHealthCheck({
-      path: "/health/"
+      path: "/health/",
+      interval: cdk.Duration.minutes(1),
     })
   }
 }
