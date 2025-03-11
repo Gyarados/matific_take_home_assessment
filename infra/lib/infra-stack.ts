@@ -77,6 +77,10 @@ export class InfraStack extends cdk.Stack {
       publicLoadBalancer: true,
     })
 
+    const scaling = service.service.autoScaleTaskCount({ maxCapacity: 5, minCapacity: 1 });
+    scaling.scaleOnCpuUtilization("CpuScaling", { targetUtilizationPercent: 70 });
+    scaling.scaleOnMemoryUtilization("RamScaling", { targetUtilizationPercent: 70 });
+
     service.targetGroup.configureHealthCheck({
       path: "/health/",
       interval: cdk.Duration.minutes(1),
