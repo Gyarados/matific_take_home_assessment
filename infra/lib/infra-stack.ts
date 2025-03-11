@@ -32,7 +32,8 @@ export class InfraStack extends cdk.Stack {
 
     const vpc = new ec2.Vpc(this, "Vpc", {
       ipAddresses: ec2.IpAddresses.cidr("10.0.0.0/16"),
-      maxAzs: 2, // 1 public + 1 private subnets
+      maxAzs: 2,
+      natGateways: 1,
       vpcName: PREFIX + 'vpc',
       restrictDefaultSecurityGroup: false,
     });
