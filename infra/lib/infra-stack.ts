@@ -6,6 +6,8 @@ import ecs = require('aws-cdk-lib/aws-ecs');
 import ecs_patterns = require('aws-cdk-lib/aws-ecs-patterns');
 import ecr = require('aws-cdk-lib/aws-ecr');
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import * as apigw2 from "aws-cdk-lib/aws-apigatewayv2";
+import { HttpAlbIntegration } from "aws-cdk-lib/aws-apigatewayv2-integrations";
 
 export const PREFIX = 'matific-test-app-';
 
@@ -72,9 +74,9 @@ export class InfraStack extends cdk.Stack {
         startPeriod: cdk.Duration.seconds(5),
       },
       desiredCount: 1,
-      certificate: certicate,
-      redirectHTTP: true,
-      publicLoadBalancer: true,
+      // certificate: certicate,
+      // redirectHTTP: true,
+      publicLoadBalancer: false,
     })
 
     const scaling = service.service.autoScaleTaskCount({ maxCapacity: 5, minCapacity: 1 });
@@ -85,5 +87,14 @@ export class InfraStack extends cdk.Stack {
       path: "/health/",
       interval: cdk.Duration.minutes(1),
     })
+
+    const httpApi = new apigw2.HttpApi(this, "HttpApi", { apiName: PREFIX + 'api-gw', });
+
+    httpApi.addRoutes({
+      path: "/",
+      methods: [apigw2.HttpMethod.GET],
+      integration: new HttpAlbIntegration("AlbIntegration", service.listener)
+    })
+
   }
 }
