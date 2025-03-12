@@ -1,9 +1,15 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
   push:
     branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      enable_cleanup:
+        description: 'Enable automatic cleanup after 15 minutes'
+        required: true
+        default: true
+        type: boolean
 
 jobs:
   infra:
@@ -83,7 +89,9 @@ jobs:
 
   trigger-cleanup:
     runs-on: ubuntu-latest
+    permissions: write-all
     needs: [release]
+    if: ${{ github.event_name == 'push' || github.event.inputs.enable_cleanup == 'true' }}
     steps:
       - name: Trigger cleanup workflow
         uses: peter-evans/repository-dispatch@v2
