@@ -52,4 +52,4 @@ jobs:
         run: echo "🚨 Time is up! Destroying all AWS resources now..."
       
       - name: Destroy all resources
-        run: cdk destroy matific-test-app-stack --require-approval never
+        run: cdk destroy matific-test-app-stack --force
