@@ -52,8 +52,7 @@ jobs:
         run: docker build -t matific-test-app-backend .
 
       - name: Run Tests
-        # must fail because -e REQUIRED_SETTINGS="test" is not set
-        run: docker run --name matific-test-app-backend matific-test-app-backend python manage.py test
+        run: docker run -e REQUIRED_SETTING="test" --name matific-test-app-backend matific-test-app-backend python manage.py test
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
