@@ -94,6 +94,7 @@ jobs:
           echo "## API Gateway Invoke URL" >> $GITHUB_STEP_SUMMARY
           echo "✅ Your API is deployed and available at:" >> $GITHUB_STEP_SUMMARY
           echo "**$INVOKE_URL**" >> $GITHUB_STEP_SUMMARY
+          echo "PS: It takes a few seconds for the new configuration to be effective." >> $GITHUB_STEP_SUMMARY
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
