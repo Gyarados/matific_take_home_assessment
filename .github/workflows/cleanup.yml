@@ -33,16 +33,20 @@ jobs:
           countdown="⚠️ Countdown started at $(date)"
           countdown_end="⚠️ Countdown ends at $(date -d '+15 minutes')"
 
-          echo warning
-          echo countdown
-          echo countdown_end
+          echo $warning
+          echo $countdown
+          echo $countdown_end
           
+          echo "warning=$warning" >> $GITHUB_ENV
+          echo "countdown=$countdown" >> $GITHUB_ENV
+          echo "countdown_end=$countdown_end" >> $GITHUB_ENV
+
           echo "## $warning" >> $GITHUB_STEP_SUMMARY
           echo "$countdown" >> $GITHUB_STEP_SUMMARY
           echo "**$countdown_end**" >> $GITHUB_STEP_SUMMARY
 
       - name: Wait for 15 minutes
-        run: sleep 900
+        run: sleep 1
       
       - name: Final warning
         run: echo "🚨 Time is up! Destroying all AWS resources now..."
