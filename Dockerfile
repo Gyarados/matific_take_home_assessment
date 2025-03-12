@@ -1,6 +1,12 @@
 FROM python:3.9-slim
 
-RUN apt-get update && apt-get install -y curl
+RUN groupadd -r appuser && useradd -r -g appuser -d /app appuser
+
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends curl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
@@ -10,8 +16,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY backend .
 
-EXPOSE 8000
-
 RUN chmod +x ./start.sh
+
+USER appuser
+
+EXPOSE 8000
 
 ENTRYPOINT [ "./start.sh" ]
