@@ -35,9 +35,19 @@ export class InfraStack extends cdk.Stack {
     const vpc = new ec2.Vpc(this, "Vpc", {
       ipAddresses: ec2.IpAddresses.cidr("10.0.0.0/16"),
       maxAzs: 2,
-      natGateways: 1,
+      natGateways: 0,
       vpcName: PREFIX + 'vpc',
       restrictDefaultSecurityGroup: false,
+      subnetConfiguration: [
+        {
+          name: 'public',
+          subnetType: ec2.SubnetType.PUBLIC,
+        },
+        {
+          name: 'application',
+          subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+        },
+      ]
     });
 
     const cluster = new ecs.Cluster(this, 'ecs-cluster', { 
@@ -77,6 +87,9 @@ export class InfraStack extends cdk.Stack {
       // certificate: certicate,
       // redirectHTTP: true,
       publicLoadBalancer: false,
+      taskSubnets: {
+        subnetType: ec2.SubnetType.PRIVATE_ISOLATED,
+      }
     })
 
     const scaling = service.service.autoScaleTaskCount({ maxCapacity: 5, minCapacity: 1 });
