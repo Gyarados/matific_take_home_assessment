@@ -46,7 +46,7 @@ jobs:
           echo "**$countdown_end**" >> $GITHUB_STEP_SUMMARY
 
       - name: Wait for 15 minutes
-        run: sleep 1
+        run: sleep 900
       
       - name: Final warning
         run: echo "🚨 Time is up! Destroying all AWS resources now..."
