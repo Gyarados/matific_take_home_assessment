@@ -29,9 +29,18 @@ jobs:
 
       - name: Warning message
         run: |
-          echo "⚠️ WARNING: For cost saving purposes, all resources will be automatically destroyed in 15 minutes."
-          echo "⚠️ Countdown started at $(date)"
-      
+          warning="⚠️ WARNING: For cost saving purposes, all resources will be automatically destroyed in 15 minutes."
+          countdown="⚠️ Countdown started at $(date)"
+          countdown_end="⚠️ Countdown ends at $(date -d '+15 minutes')"
+
+          echo warning
+          echo countdown
+          echo countdown_end
+          
+          echo "## $warning" >> $GITHUB_STEP_SUMMARY
+          echo "$countdown" >> $GITHUB_STEP_SUMMARY
+          echo "**$countdown_end**" >> $GITHUB_STEP_SUMMARY
+
       - name: Wait for 15 minutes
         run: sleep 900
       

@@ -8,7 +8,7 @@ on:
       enable_cleanup:
         description: 'Enable automatic cleanup after 15 minutes'
         required: true
-        default: true
+        default: false
         type: boolean
 
 jobs:
@@ -103,9 +103,9 @@ jobs:
     runs-on: ubuntu-latest
     permissions: write-all
     needs: [release]
-    if: ${{ github.event_name == 'push' || github.event.inputs.enable_cleanup == 'true' }}
+    if: ${{ github.event.inputs.enable_cleanup == 'true' }}
     steps:
-      - name: Trigger cleanup workflow
+      - name: Trigger cleanup in 15 minutes
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
