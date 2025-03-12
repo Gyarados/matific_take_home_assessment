@@ -39,12 +39,7 @@ jobs:
       - name: View Diff
         run: cdk diff matific-test-app-stack
 
-      # - name: Manual Approval
-      #   id: manual-approval
-      #   run: echo "Please approve the deployment"
-
       - name: Deploy to AWS
-        # if: ${{ steps.manual-approval.outputs.result == 'approved' }}
         run: cdk deploy matific-test-app-stack --require-approval never
 
   build:
@@ -82,6 +77,25 @@ jobs:
       - name: Release new version
         run: |
           aws ecs update-service --cluster matific-test-app-ecs-cluster --service matific-test-app-service --force-new-deployment
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ vars.AWS_REGION }}
+
+      - name: Get API Gateway Invoke URL
+        run: |
+          API_ID=$(aws apigateway get-rest-apis --query "items[?name=='matific-test-app-api-gw'].id" --output text)
+          
+          STAGE_NAME=$(aws apigateway get-stages --rest-api-id $API_ID --query "item[0].stageName" --output text)
+          
+          INVOKE_URL="https://$API_ID.execute-api.${{ vars.AWS_REGION }}.amazonaws.com/$STAGE_NAME"
+          
+          echo "::notice title=API Gateway Invoke URL::$INVOKE_URL"
+          echo "INVOKE_URL=$INVOKE_URL" >> $GITHUB_ENV
+          
+          echo "## API Gateway Invoke URL" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Your API is deployed and available at:" >> $GITHUB_STEP_SUMMARY
+          echo "**$INVOKE_URL**" >> $GITHUB_STEP_SUMMARY
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
