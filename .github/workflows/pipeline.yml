@@ -84,11 +84,9 @@ jobs:
 
       - name: Get API Gateway Invoke URL
         run: |
-          API_ID=$(aws apigateway get-rest-apis --query "items[?name=='matific-test-app-api-gw'].id" --output text)
+          API_ID=$(aws apigatewayv2 get-apis --query "Items[?Name=='matific-test-app-api-gw'].ApiId" --output text)
           
-          STAGE_NAME=$(aws apigateway get-stages --rest-api-id $API_ID --query "item[0].stageName" --output text)
-          
-          INVOKE_URL="https://$API_ID.execute-api.${{ vars.AWS_REGION }}.amazonaws.com/$STAGE_NAME"
+          INVOKE_URL="https://$API_ID.execute-api.${{ vars.AWS_REGION }}.amazonaws.com"
           
           echo "::notice title=API Gateway Invoke URL::$INVOKE_URL"
           echo "INVOKE_URL=$INVOKE_URL" >> $GITHUB_ENV
